@@ -34,9 +34,18 @@ python -m http.server 8000
 ## 현재 포함된 자산
 
 - 논문 및 supplementary PDF
-- Figure 1, 3, 4, 5, 6, 7 기반 이미지
+- Figure 1~7 기반 이미지 (`attention_map`, `teaser`, `cross_scale_mass`, `clip_boundary`, `recalibration`, `method_overview`, `density_schedule`)
 - 480p T2V 정성 비교 GIF 3개
-- 720p T2V/I2V 핵심 결과표
+- 논문 Table 1/2/3 캡처 (`table1_720p`, `table2_compat`, `table3_480p`)
+
+결과 표는 논문 PDF에서 300dpi로 크롭한 이미지입니다. 논문 수치가 바뀌면 아래로 재생성하세요.
+
+```bash
+pdftoppm -png -r 300 -f 6 -l 7 static/papers/SparSTAR_AAAI27_Submission.pdf hi
+# Table 1: hi-6.png  y 225..1190,  x 225..2324
+# Table 2: hi-6.png  y 1246..1663, x 225..2324
+# Table 3: hi-7.png  y 204..780,   x 225..1220  (좌측 단만)
+```
 
 ## 구조
 

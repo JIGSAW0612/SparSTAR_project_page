@@ -72,6 +72,10 @@
 
     <section id="analysis" class="section shell">
       <div class="section-heading"><div><div class="kicker">WHY FRESH SELECTION?</div><h2>Analysis-driven design</h2></div><p>Three observations motivate recomputing the sparse mask rather than transferring it.</p></div>
+      <figure class="paper-figure">
+        <a href="static/images/attention_map.png" target="_blank" rel="noopener"><img src="static/images/attention_map.png" alt="Dense-attention patterns across clips and scales in a 480p two-clip text-to-video trace" /></a>
+        <figcaption><strong>Dense-attention patterns across clips and scales</strong> in a representative 480p two-clip T2V trace. Attention concentrates on block-structured regions, but which blocks are active changes at clip boundaries (left) and between refinement scales (right) — so a mask transferred from an earlier clip or scale misses newly active blocks.</figcaption>
+      </figure>
       <div class="insight-grid">
         <article class="card">
           <div class="card-number">01</div><h3>Patterns shift across scales</h3>
@@ -106,24 +110,27 @@
     </section>
 
     <section id="results" class="section shell">
-      <div class="section-heading"><div><div class="kicker">720P · 5 SECONDS · 81 FRAMES</div><h2>Quality–efficiency results</h2></div><p>SparSTAR targets attention edges while preserving all tokens and refinement stages.</p></div>
+      <div class="section-heading"><div><div class="kicker">EXPERIMENTS</div><h2>Quality–efficiency results</h2></div><p>Tables are reproduced from the paper. SparSTAR targets attention edges while preserving all tokens and refinement stages.</p></div>
       <div class="metric-grid">
         <div class="metric"><span>T2V speedup</span><strong>1.60×</strong><small>VBench 83.83</small></div>
         <div class="metric"><span>T2V fidelity</span><strong>31.22 dB</strong><small>LPIPS 0.065</small></div>
         <div class="metric"><span>I2V speedup</span><strong>1.62×</strong><small>VBench 80.96</small></div>
         <div class="metric"><span>I2V fidelity</span><strong>27.96 dB</strong><small>LPIPS 0.080</small></div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Task</th><th>Method</th><th>PSNR ↑</th><th>SSIM ↑</th><th>LPIPS ↓</th><th>VBench ↑</th><th>Speedup ↑</th></tr></thead>
-          <tbody>
-            <tr><td rowspan="2">720p T2V</td><td>Dense InfinityStar</td><td>–</td><td>–</td><td>–</td><td>83.79</td><td>1.00×</td></tr>
-            <tr class="ours"><td>SparSTAR</td><td><strong>31.22</strong></td><td><strong>0.898</strong></td><td><strong>0.065</strong></td><td><strong>83.83</strong></td><td><strong>1.60×</strong></td></tr>
-            <tr><td rowspan="2">720p I2V</td><td>Dense InfinityStar</td><td>–</td><td>–</td><td>–</td><td>81.04</td><td>1.00×</td></tr>
-            <tr class="ours"><td>SparSTAR</td><td><strong>27.96</strong></td><td><strong>0.870</strong></td><td><strong>0.080</strong></td><td><strong>80.96</strong></td><td><strong>1.62×</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <figure class="paper-table">
+        <a href="static/images/table1_720p.png" target="_blank" rel="noopener"><img src="static/images/table1_720p.png" alt="Table 1: quality and efficiency for 720p T2V and I2V against token-reduction baselines" /></a>
+        <figcaption><strong>Main comparison.</strong> Against the published token-reduction baselines, SparSTAR improves paired-output PSNR by <strong>2.92 dB</strong> on T2V and <strong>2.31 dB</strong> on I2V over the strongest of them, while VBench stays within 0.04 and 0.08 points of dense InfinityStar.</figcaption>
+      </figure>
+
+      <figure class="paper-table">
+        <a href="static/images/table2_compat.png" target="_blank" rel="noopener"><img src="static/images/table2_compat.png" alt="Table 2: compatibility of SparSTAR with complementary acceleration" /></a>
+        <figcaption><strong>Composable with other accelerations.</strong> SparSTAR is orthogonal to scale-skipping and guidance-free sampling: stacking either pushes end-to-end speedup to <strong>2.2–2.5×</strong> for 0.6–1.3 dB of paired-output PSNR.</figcaption>
+      </figure>
+
+      <figure class="paper-table">
+        <a href="static/images/table3_480p.png" target="_blank" rel="noopener"><img src="static/images/table3_480p.png" alt="Table 3: quality and efficiency for 480p 10-second T2V and I2V generation" /></a>
+        <figcaption><strong>Longer, lower-resolution setting.</strong> On 480p 10-second generation the same training-free configuration gives 1.31× (T2V) and 1.36× (I2V) speedup with VBench within 0.9 and 0.5 points of dense.</figcaption>
+      </figure>
       <div class="result-notes">
         <div><strong>7.08×</strong><span>sparse operator speedup over FlashAttention-2 in the matched final-scale benchmark</span></div>
         <div><strong>&lt;1.7%</strong><span>end-to-end latency added by selection and mask construction</span></div>
@@ -134,7 +141,7 @@
 
     <section id="qualitative" class="section section-alt">
       <div class="shell">
-        <div class="section-heading"><div><div class="kicker">QUALITATIVE COMPARISONS</div><h2>Dense InfinityStar vs. SparSTAR</h2></div><p>Five sampled frames are animated for this draft. Replace them with full MP4 outputs before public launch.</p></div>
+        <div class="section-heading"><div><div class="kicker">QUALITATIVE COMPARISONS</div><h2>Dense InfinityStar vs. SparSTAR</h2></div><p>Matched prompts and seeds. Each clip animates five sampled frames; full-length videos accompany the code release.</p></div>
         <div class="gallery">
           <figure><img src="static/images/qualitative_1.gif" alt="Dense and SparSTAR qualitative comparison example 1"/><figcaption>Example 1 · 480p T2V</figcaption></figure>
           <figure><img src="static/images/qualitative_2.gif" alt="Dense and SparSTAR qualitative comparison example 2"/><figcaption>Example 2 · 480p T2V</figcaption></figure>
@@ -162,7 +169,10 @@
   </main>
 
   <footer>
-    <div class="shell">SparSTAR project-page draft · Built in the style of the Academic Project Page Template and inspired by AgilePruner and EDAFormer.</div>
+    <div class="shell">
+      <p>This page borrows its structure from the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>, which itself builds on the <a href="https://nerfies.github.io/" target="_blank" rel="noopener">Nerfies</a> project page.</p>
+      <p>Licensed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
+    </div>
   </footer>
 </body>
 </html>
