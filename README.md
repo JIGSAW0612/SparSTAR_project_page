@@ -31,16 +31,22 @@ python -m http.server 8000
 
 - 논문 및 supplementary PDF
 - Figure 1~7 기반 이미지 (`attention_map`, `teaser`, `cross_scale_mass`, `clip_boundary`, `recalibration`, `method_overview`, `density_schedule`)
-- 480p T2V dense/ours 나란히 비교 영상 6개 (`static/videos/`) + 포스터 JPG
-- 논문 Table 1/2/3 캡처 (`table1_720p`, `table2_compat`, `table3_480p`)
+- 480p T2V dense/ours 나란히 비교 영상 4개 (`static/videos/`) + 포스터 JPG
+- 표 캡처 (`table1_720p`, `table2_compat` = 본문 Table 1/2, `table_480p_5s` = supplementary Table 7)
+- Method 그림은 논문 Figure 6을 400dpi로 추출 (`method_overview`)
 
-결과 표는 논문 PDF에서 300dpi로 크롭한 이미지입니다. 논문 수치가 바뀌면 아래로 재생성하세요.
+결과 표와 method 그림은 논문 PDF에서 직접 크롭한 이미지입니다.
+**표 이미지에는 논문 캡션을 포함하지 않습니다** — 설명은 페이지의 HTML 캡션이 담당합니다.
 
 ```bash
-pdftoppm -png -r 300 -f 6 -l 7 static/papers/SparSTAR_AAAI27_Submission.pdf hi
-# Table 1: hi-6.png  y 225..1190,  x 225..2324
-# Table 2: hi-6.png  y 1246..1663, x 225..2324
-# Table 3: hi-7.png  y 204..780,   x 225..1220  (좌측 단만)
+pdftoppm -png -r 300 -f 6 -l 6 static/papers/SparSTAR_AAAI27_Submission.pdf hi
+pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_AAAI27_Submission.pdf m
+pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_Supplementary.pdf s
+
+# Table 1        hi-6.png  300dpi  y  225..1062  x  225..2324
+# Table 2        hi-6.png  300dpi  y 1246..1535  x  225..2324
+# Figure 6       m-5.png   400dpi  y  313.. 917  x 1799..3077   (우측 단)
+# Supp Table 7   s-05.png  400dpi  y  925..1755  x 1774..3099   (우측 단)
 ```
 
 ## 구조
@@ -60,8 +66,9 @@ AgilePruner / EDAFormer 계열 Academic Project Page Template 구조를 따릅�
 ## 비교 영상 재생성
 
 `t2v/480p_dense` 와 `t2v/480p_ours` (sparse-only = 논문 기준 SparSTAR) 를 좌우로 붙여 CRF 22로 인코딩했습니다.
-프롬프트는 논문 선정 규칙(motion 하위 60% 제외 후 LPIPS 오름차순)으로 후보를 뽑은 뒤,
-생성 자체가 깨진 클립(예: 축구)을 눈으로 걸러내고 6개를 골랐습니다.
+프롬프트는 motion 하위 60%를 제외한 뒤 **PSNR 내림차순**으로 후보를 뽑고,
+카메라 이동이 아닌 실제 피사체 운동이 있으면서 생성이 깨지지 않은 4개를 눈으로 골랐습니다.
+(car accelerating / ballet / sword fighting / skateboarding)
 
 > 주의: `*_ours` 는 sparse-only, `*_ours_goff` 는 guidance-off까지 포함한 변형입니다.
 > 논문 Table 1의 SparSTAR(1.60×)는 `*_ours` 쪽이므로 영상도 이 폴더를 써야 합니다.
