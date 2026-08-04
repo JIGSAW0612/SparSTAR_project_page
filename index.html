@@ -116,20 +116,20 @@
         <div class="column is-four-fifths">
           <h2 class="title is-3">Abstract</h2>
           <div class="content">
+            <!-- Verbatim from the paper. Do not paraphrase or restructure. -->
             <p>
               InfinityStar extends visual autoregressive generation to video through a sequence of image and clip
-              pyramids, but its changing scale and cross-clip context leave late-stage attention costly and make sparse
-              patterns reused from diffusion or image VAR models unreliable. Our analyses trace this to a single cause:
-              the key blocks that carry attention mass shift across refinement scales and across clip boundaries, so a
-              mask transferred from an earlier scale or clip systematically misses newly active blocks. Building on that
-              observation, we introduce <strong>SparSTAR</strong>, a training-free block-sparse attention method that
-              recomputes its support wherever attention is expensive: at each sparsified scale and attention head it
-              scores contiguous key blocks from the current query and key activations, retains the required conditioning
-              context, and executes only the selected blocks through a forward-only sparse path. Because selection is
-              refreshed rather than inherited, SparSTAR preserves every token and every refinement scale &mdash; nothing
-              is pruned, evicted, or skipped &mdash; and on 720p text-to-video and image-to-video generation it holds
-              VBench and paired-output reconstruction fidelity close to dense InfinityStar while delivering about
-              <strong>1.6&times; end-to-end speedup</strong>.
+              pyramids. Its changing scale and cross-clip context, however, leave late-stage attention costly and make
+              sparse patterns reused from diffusion or image VAR models unreliable. We introduce SparSTAR, a
+              training-free block-sparse attention method tailored to this setting. At each expensive scale and attention
+              head, SparSTAR scores contiguous key blocks from the current query and key activations, retains required
+              conditioning context, and executes the selected blocks through a forward-only sparse path. We analyze
+              cross-scale consistency within a clip, pattern persistence across clip boundaries, and quality degradation
+              as reuse spans increasingly distant scales. Across these analyses, important key blocks shift, showing that
+              recomputing block selection at each target scale is more reliable than reusing a transferred mask. On 720p
+              text-to-video and image-to-video generation, SparSTAR preserves every token and refinement scale while
+              providing about a 1.6&times; end-to-end speedup and maintaining VBench and paired-output reconstruction
+              fidelity close to dense InfinityStar.
             </p>
           </div>
         </div>

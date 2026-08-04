@@ -63,6 +63,17 @@ static/
 레이아웃은 Bulma(CDN) + Font Awesome + academicons를 쓰고, `static/css/style.css` 는 그 위의 커스텀만 담습니다.
 AgilePruner / EDAFormer 계열 Academic Project Page Template 구조를 따릅니다. 자체 JavaScript는 없습니다.
 
+## Abstract
+
+`index.html` 의 Abstract는 **논문 원문 그대로**입니다. 요약·재작성하지 마세요.
+논문이 바뀌면 아래로 다시 뽑아 교체하고, 문자 단위로 일치하는지 확인하세요.
+
+```bash
+pdftotext -f 1 -l 1 static/papers/SparSTAR_AAAI27_Submission.pdf - | sed -n '/^Abstract/,/^Introduction/p'
+```
+
+> pdftotext는 줄바꿈에서 공백을 흘립니다 (`asequence`, `cross-clipcontext`). 붙여넣기 전에 복원하세요.
+
 ## 비교 영상 재생성
 
 `t2v/480p_dense` 와 `t2v/480p_ours` (sparse-only = 논문 기준 SparSTAR) 를 좌우로 붙여 CRF 22로 인코딩했습니다.
