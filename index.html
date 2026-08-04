@@ -3,191 +3,386 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="SparSTAR: training-free sparse attention for SpaceTime AutoRegressive video synthesis." />
+  <meta name="description" content="SparSTAR: a training-free, clip-aware block-sparse attention framework for SpaceTime AutoRegressive video synthesis, giving about 1.6x end-to-end speedup on 720p InfinityStar generation." />
+  <meta name="keywords" content="SparSTAR, sparse attention, video generation, visual autoregressive, InfinityStar, block-sparse, training-free acceleration, FlexAttention, AAAI 2027" />
   <meta name="author" content="Jongbeom Lee, Hyunwoo Yu, Jincheol Yang, Jaemin Choi, Suk-Ju Kang" />
-  <link rel="canonical" href="https://jigsaw0612.github.io/sparstar/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://jigsaw0612.github.io/sparstar/" />
+  <title>SparSTAR: Sparse Attention for SpaceTime AutoRegressive Video Synthesis</title>
+
+  <!-- Open Graph / Social -->
   <meta property="og:title" content="SparSTAR: Sparse Attention for SpaceTime AutoRegressive Video Synthesis" />
   <meta property="og:description" content="Fresh, clip-aware block selection for efficient InfinityStar video generation." />
-  <!-- og:image must be an absolute URL; relative paths are ignored by most link-preview crawlers. -->
-  <meta property="og:image" content="https://jigsaw0612.github.io/sparstar/static/images/teaser.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jigsaw0612.github.io/SparSTAR/" />
+  <meta property="og:image" content="https://jigsaw0612.github.io/SparSTAR/static/images/teaser.png" />
+
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="SparSTAR: Sparse Attention for SpaceTime AutoRegressive Video Synthesis" />
   <meta name="twitter:description" content="Fresh, clip-aware block selection for efficient InfinityStar video generation." />
-  <meta name="twitter:image" content="https://jigsaw0612.github.io/sparstar/static/images/teaser.png" />
-  <title>SparSTAR | Project Page</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans:400,600,700|Castoro&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="static/css/style.css" />
+  <meta name="twitter:image" content="https://jigsaw0612.github.io/SparSTAR/static/images/teaser.png" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://jigsaw0612.github.io/SparSTAR/" />
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
-  <!-- Status banner. Delete this whole div once the paper is accepted and camera-ready. -->
-  <div class="review-banner">
-    <strong>Preprint.</strong> Under review at AAAI-27. Code and models will be released upon publication.
-  </div>
 
-  <nav class="nav shell" aria-label="Primary navigation">
-    <a class="brand" href="#top">SparSTAR</a>
-    <div class="nav-links">
-      <a href="#abstract">Abstract</a><a href="#analysis">Analysis</a><a href="#method">Method</a><a href="#results">Results</a><a href="#qualitative">Visuals</a>
-    </div>
-  </nav>
+  <!-- Title / authors / links -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              SparSTAR: Sparse Attention for SpaceTime AutoRegressive Video Synthesis
+            </h1>
+            <div class="is-size-4 publication-venue">
+              AAAI 2027 Submission &middot; Under Review
+            </div>
+            <div class="is-size-5 publication-authors" style="font-weight: bold;">
+              <span class="author-block">Jongbeom Lee<sup>1*</sup>,</span>
+              <span class="author-block">Hyunwoo Yu<sup>1*</sup>,</span>
+              <span class="author-block">Jincheol Yang<sup>1*</sup>,</span>
+              <span class="author-block">Jaemin Choi<sup>1*</sup>,</span>
+              <span class="author-block">Suk-Ju Kang<sup>1&dagger;</sup></span>
+            </div>
+            <div class="is-size-6 publication-authors">
+              <span class="author-block"><sup>1</sup>Sogang University</span>
+            </div>
+            <div class="is-size-6 author-notes">
+              <span>*Equal contribution</span>
+              <span style="margin-left: 1rem;">&dagger;Corresponding author</span>
+            </div>
 
-  <main id="top">
-    <header class="hero shell">
-      <div class="eyebrow">AAAI-27 SUBMISSION · VIDEO GENERATION · SPARSE ATTENTION</div>
-      <h1><span>SparSTAR:</span> Sparse Attention for<br/>SpaceTime AutoRegressive Video Synthesis</h1>
-      <p class="lead">A training-free, clip-aware block-sparse attention framework that recomputes sparse support at every expensive autoregressive scale.</p>
-      <!--
-        AUTHORS. To link an author to their homepage, swap the span for an anchor:
-          <a class="author-name" href="https://...">Jongbeom Lee</a><sup>1*</sup>
-      -->
-      <div class="authors">
-        <span class="author-name">Jongbeom Lee</span><sup>1*</sup>,
-        <span class="author-name">Hyunwoo Yu</span><sup>1*</sup>,
-        <span class="author-name">Jincheol Yang</span><sup>1*</sup>,
-        <span class="author-name">Jaemin Choi</span><sup>1*</sup>,
-        <span class="author-name">Suk-Ju Kang</span><sup>1&dagger;</sup>
-      </div>
-      <div class="affiliation">
-        <sup>1</sup>Sogang University
-        <span class="author-note">* Equal contribution &nbsp;·&nbsp; &dagger; Corresponding author</span>
-      </div>
-      <div class="action-row">
-        <a class="button primary" href="static/papers/SparSTAR_AAAI27_Submission.pdf">Paper</a>
-        <a class="button" href="static/papers/SparSTAR_Supplementary.pdf">Supplementary</a>
-        <!-- Swap each placeholder for a real link once available, e.g.
-             <a class="button" href="https://github.com/<user>/sparstar">Code</a>
-             <a class="button" href="https://arxiv.org/abs/XXXX.XXXXX">arXiv</a> -->
-        <span class="button disabled" title="Enable after public release">Code · Coming soon</span>
-        <span class="button disabled" title="Enable after public release">arXiv · Coming soon</span>
-      </div>
-    </header>
-
-    <section class="shell teaser-wrap">
-      <img src="static/images/teaser.png" alt="Comparison of cross-clip sparse pattern reuse and SparSTAR dynamic masks" />
-      <p class="caption"><strong>Core idea.</strong> Sparse support transferred from an earlier scale or clip can miss newly active blocks. SparSTAR instead builds a fresh per-head mask at each sparsified scale with low selector overhead.</p>
-    </section>
-
-    <section class="tldr-band">
-      <div class="shell tldr"><span>TL;DR</span><p>Video autoregressive attention patterns shift across scales and clip boundaries. Fresh aggregated-QK block selection preserves dense-generation fidelity while providing about <strong>1.6× end-to-end speedup</strong> at 720p.</p></div>
-    </section>
-
-    <section id="abstract" class="section shell narrow">
-      <h2>Abstract</h2>
-      <p>InfinityStar extends visual autoregressive generation to video through a sequence of image and clip pyramids. Its changing scale and cross-clip context, however, leave late-stage attention costly and make sparse patterns reused from diffusion or image VAR models unreliable. We introduce <strong>SparSTAR</strong>, a training-free block-sparse attention method tailored to this setting. At each expensive scale and attention head, SparSTAR scores contiguous key blocks from the current query and key activations, retains required conditioning context, and executes the selected blocks through a forward-only sparse path.</p>
-      <p>Our analyses show that important key blocks shift across scales and clips, making fresh selection more reliable than transferred masks. On 720p text-to-video and image-to-video generation, SparSTAR preserves every token and refinement scale while maintaining VBench and paired-output reconstruction fidelity close to dense InfinityStar.</p>
-    </section>
-
-    <section id="analysis" class="section shell">
-      <div class="section-heading"><div><div class="kicker">WHY FRESH SELECTION?</div><h2>Analysis-driven design</h2></div><p>Three observations motivate recomputing the sparse mask rather than transferring it.</p></div>
-      <figure class="paper-figure">
-        <a href="static/images/attention_map.png" target="_blank" rel="noopener"><img src="static/images/attention_map.png" alt="Dense-attention patterns across clips and scales in a 480p two-clip text-to-video trace" /></a>
-        <figcaption><strong>Dense-attention patterns across clips and scales</strong> in a representative 480p two-clip T2V trace. Attention concentrates on block-structured regions, but which blocks are active changes at clip boundaries (left) and between refinement scales (right) — so a mask transferred from an earlier clip or scale misses newly active blocks.</figcaption>
-      </figure>
-      <div class="insight-grid">
-        <article class="card">
-          <div class="card-number">01</div><h3>Patterns shift across scales</h3>
-          <img src="static/images/cross_scale_mass.png" alt="Retained attention mass across scales" />
-          <p>Cross-scale reuse loses substantial attention mass, while freshly recomputed block-wise selection stays close to the token-wise upper bound.</p>
-        </article>
-        <article class="card">
-          <div class="card-number">02</div><h3>Patterns only partially persist across clips</h3>
-          <img src="static/images/clip_boundary.png" alt="Fresh versus reused selection across clip boundaries" />
-          <p>At a 15% preceding-clip context budget, fresh Clip-2 selection retains 85% of attention mass versus 56% for reusing Clip-1 support.</p>
-        </article>
-        <article class="card">
-          <div class="card-number">03</div><h3>Recalibration is worth the overhead</h3>
-          <img src="static/images/recalibration.png" alt="PSNR latency trade-off for recalibration frequency" />
-          <p>Updating every scale recovers 1.73 dB over single transfer for only 0.30 seconds of additional latency in the reported 720p analysis.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="method" class="section section-alt">
-      <div class="shell">
-        <div class="section-heading"><div><div class="kicker">METHOD</div><h2>Fresh, clip-aware block selection</h2></div><p>Training-free sparsification without token pruning, KV eviction, or skipped refinement scales.</p></div>
-        <div class="method-layout">
-          <div class="method-figure"><img src="static/images/method_overview.png" alt="Overview of the SparSTAR selection and sparse execution pipeline" /></div>
-          <div class="steps">
-            <div class="step"><span>1</span><div><h3>Aggregate contiguous Q/K blocks</h3><p>Queries and keys are partitioned into 128-token blocks. Per-head block compatibility is scored from the current activations.</p></div></div>
-            <div class="step"><span>2</span><div><h3>Apply clip-dependent retention</h3><p>Required conditioning context remains dense, while eligible current-scale and preceding-clip blocks are ranked under a scale-wise density budget.</p></div></div>
-            <div class="step"><span>3</span><div><h3>Execute a forward-only sparse path</h3><p>Selected blocks are passed to a FlexAttention-based implementation that omits backward-only indexing structures during inference.</p></div></div>
+            <!-- Paper links -->
+            <div class="column has-text-centered" style="margin-top: 1.5rem;">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="static/papers/SparSTAR_AAAI27_Submission.pdf" class="button is-normal is-rounded is-dark" target="_blank">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="static/papers/SparSTAR_Supplementary.pdf" class="button is-normal is-rounded is-dark" target="_blank">
+                    <span class="icon"><i class="fas fa-file-alt"></i></span>
+                    <span>Supplementary</span>
+                  </a>
+                </span>
+                <!-- Enable once public: replace each button with
+                     <a href="https://arxiv.org/abs/XXXX.XXXXX" class="button is-normal is-rounded is-dark" target="_blank"> -->
+                <span class="link-block">
+                  <button class="button is-normal is-rounded is-dark" disabled>
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv (soon)</span>
+                  </button>
+                </span>
+                <span class="link-block">
+                  <button class="button is-normal is-rounded is-dark" disabled>
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code (soon)</span>
+                  </button>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="results" class="section shell">
-      <div class="section-heading"><div><div class="kicker">EXPERIMENTS</div><h2>Quality–efficiency results</h2></div><p>Tables are reproduced from the paper. SparSTAR targets attention edges while preserving all tokens and refinement stages.</p></div>
-      <div class="metric-grid">
-        <div class="metric"><span>T2V speedup</span><strong>1.60×</strong><small>VBench 83.83</small></div>
-        <div class="metric"><span>T2V fidelity</span><strong>31.22 dB</strong><small>LPIPS 0.065</small></div>
-        <div class="metric"><span>I2V speedup</span><strong>1.62×</strong><small>VBench 80.96</small></div>
-        <div class="metric"><span>I2V fidelity</span><strong>27.96 dB</strong><small>LPIPS 0.080</small></div>
+  <!-- Teaser -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img src="static/images/teaser.png" alt="Cross-clip sparse pattern reuse versus SparSTAR dynamic masks" />
+        <h3 class="subtitle has-text-centered figure-caption">
+          <strong>Core idea.</strong> Sparse support transferred from an earlier scale or clip can miss newly active
+          blocks. SparSTAR instead builds a fresh per-head mask at each sparsified scale with low selector overhead.
+        </h3>
       </div>
-      <figure class="paper-table">
-        <a href="static/images/table1_720p.png" target="_blank" rel="noopener"><img src="static/images/table1_720p.png" alt="Table 1: quality and efficiency for 720p T2V and I2V against token-reduction baselines" /></a>
-        <figcaption><strong>Main comparison.</strong> Against the published token-reduction baselines, SparSTAR improves paired-output PSNR by <strong>2.92 dB</strong> on T2V and <strong>2.31 dB</strong> on I2V over the strongest of them, while VBench stays within 0.04 and 0.08 points of dense InfinityStar.</figcaption>
-      </figure>
+    </div>
+  </section>
 
-      <figure class="paper-table">
-        <a href="static/images/table2_compat.png" target="_blank" rel="noopener"><img src="static/images/table2_compat.png" alt="Table 2: compatibility of SparSTAR with complementary acceleration" /></a>
-        <figcaption><strong>Composable with other accelerations.</strong> SparSTAR is orthogonal to scale-skipping and guidance-free sampling: stacking either pushes end-to-end speedup to <strong>2.2–2.5×</strong> for 0.6–1.3 dB of paired-output PSNR.</figcaption>
-      </figure>
-
-      <figure class="paper-table">
-        <a href="static/images/table3_480p.png" target="_blank" rel="noopener"><img src="static/images/table3_480p.png" alt="Table 3: quality and efficiency for 480p 10-second T2V and I2V generation" /></a>
-        <figcaption><strong>Longer, lower-resolution setting.</strong> On 480p 10-second generation the same training-free configuration gives 1.31× (T2V) and 1.36× (I2V) speedup with VBench within 0.9 and 0.5 points of dense.</figcaption>
-      </figure>
-      <div class="result-notes">
-        <div><strong>7.08×</strong><span>sparse operator speedup over FlashAttention-2 in the matched final-scale benchmark</span></div>
-        <div><strong>&lt;1.7%</strong><span>end-to-end latency added by selection and mask construction</span></div>
-        <div><strong>74.6%</strong><span>of sparsified-scale attention cost comes from the 72k-token final scale</span></div>
-      </div>
-      <div class="density-row"><img src="static/images/density_schedule.png" alt="Ablation of increasing, constant and decreasing density schedules"/><p><strong>Hierarchical density schedule.</strong> The decreasing schedule allocates more density to earlier, cheaper refinement scales and the most aggressive budget to the final 72k-token scale.</p></div>
-    </section>
-
-    <section id="qualitative" class="section section-alt">
-      <div class="shell">
-        <div class="section-heading"><div><div class="kicker">QUALITATIVE COMPARISONS</div><h2>Dense InfinityStar vs. SparSTAR</h2></div><p>Full 480p, 5-second, 81-frame generations at matched prompts and seeds. Left is dense InfinityStar, right is SparSTAR — the same seven prompts used for the qualitative figure in the paper.</p></div>
-        <div class="video-gallery">
-          <figure><video src="static/videos/qual_t2v_480p_1.mp4" poster="static/videos/qual_t2v_480p_1.jpg" autoplay loop muted playsinline controls preload="metadata"></video><figcaption>“A person is doing aerobics”</figcaption></figure>
-          <figure><video src="static/videos/qual_t2v_480p_2.mp4" poster="static/videos/qual_t2v_480p_2.jpg" autoplay loop muted playsinline controls preload="metadata"></video><figcaption>“skis and a snowboard”</figcaption></figure>
-          <figure><video src="static/videos/qual_t2v_480p_3.mp4" poster="static/videos/qual_t2v_480p_3.jpg" autoplay loop muted playsinline controls preload="metadata"></video><figcaption>“an umbrella”</figcaption></figure>
-          <figure><video src="static/videos/qual_t2v_480p_4.mp4" poster="static/videos/qual_t2v_480p_4.jpg" autoplay loop muted playsinline controls preload="metadata"></video><figcaption>“Gwen Stacy reading a book, pan right”</figcaption></figure>
-          <figure><video src="static/videos/qual_t2v_480p_5.mp4" poster="static/videos/qual_t2v_480p_5.jpg" autoplay loop muted playsinline controls preload="metadata"></video><figcaption>“a snowboard on the top of a kite, front view”</figcaption></figure>
-          <figure><video src="static/videos/qual_t2v_480p_6.mp4" poster="static/videos/qual_t2v_480p_6.jpg" autoplay loop muted playsinline controls preload="metadata"></video><figcaption>“Snow rocky mountains peaks canyon…”</figcaption></figure>
-          <figure><video src="static/videos/qual_t2v_480p_7.mp4" poster="static/videos/qual_t2v_480p_7.jpg" autoplay loop muted playsinline controls preload="metadata"></video><figcaption>“A person is shooting goal (soccer)”</figcaption></figure>
+  <!-- Abstract -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content">
+            <p>
+              InfinityStar extends visual autoregressive generation to video through a sequence of image and clip
+              pyramids. Its changing scale and cross-clip context, however, leave late-stage attention costly and make
+              sparse patterns reused from diffusion or image VAR models unreliable. We introduce <strong>SparSTAR</strong>,
+              a training-free block-sparse attention method tailored to this setting. At each expensive scale and
+              attention head, SparSTAR scores contiguous key blocks from the current query and key activations, retains
+              required conditioning context, and executes the selected blocks through a forward-only sparse path.
+            </p>
+            <p>
+              Our analyses show that important key blocks shift across scales and clips, making fresh selection more
+              reliable than transferred masks. On 720p text-to-video and image-to-video generation, SparSTAR preserves
+              every token and refinement scale while maintaining VBench and paired-output reconstruction fidelity close
+              to dense InfinityStar, at about <strong>1.6&times; end-to-end speedup</strong>.
+            </p>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section shell narrow release">
-      <div class="kicker">RELEASE PLAN</div><h2>Reproducibility assets</h2>
-      <p>The paper states that generation code, sparse selection, FlexAttention execution, preprocessing, metric computation, table aggregation, prompt/seed manifests, density schedules, timing scripts, and raw per-video outputs will be released upon publication.</p>
-      <div class="checklist"><span>✓ Paper & supplement</span><span>○ Source code</span><span>○ Model configuration</span><span>○ Prompt/seed manifests</span><span>○ Raw evaluation outputs</span></div>
-    </section>
+  <!-- Analysis -->
+  <section class="hero is-small is-white">
+    <div class="hero-body">
+      <div class="container is-four-fifths">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Analysis-driven design</h2>
+            <div class="content">
+              <p>
+                Three observations motivate recomputing the sparse mask at every expensive scale rather than
+                transferring it from an earlier scale or clip.
+              </p>
+            </div>
+            <figure class="image">
+              <a href="static/images/attention_map.png" target="_blank">
+                <img src="static/images/attention_map.png" alt="Dense-attention patterns across clips and scales" />
+              </a>
+            </figure>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              Dense-attention patterns across clips and scales in a 480p two-clip T2V trace. Attention concentrates on
+              block-structured regions, but which blocks are active changes at clip boundaries (left) and between
+              refinement scales (right).
+            </h3>
 
-    <section class="section shell narrow citation-block">
-      <h2>BibTeX</h2>
+            <div class="columns is-centered insight-row">
+              <div class="column">
+                <figure class="image"><img src="static/images/cross_scale_mass.png" alt="Retained attention mass across scales" /></figure>
+                <h4 class="title is-6 has-text-centered">Patterns shift across scales</h4>
+                <p class="is-size-7 has-text-centered">Cross-scale reuse loses substantial attention mass, while freshly recomputed block-wise selection stays close to the token-wise upper bound.</p>
+              </div>
+              <div class="column">
+                <figure class="image"><img src="static/images/clip_boundary.png" alt="Fresh versus reused selection across clip boundaries" /></figure>
+                <h4 class="title is-6 has-text-centered">Only partial persistence across clips</h4>
+                <p class="is-size-7 has-text-centered">At a 15% preceding-clip context budget, fresh Clip-2 selection retains 85% of attention mass versus 56% for reusing Clip-1 support.</p>
+              </div>
+              <div class="column">
+                <figure class="image"><img src="static/images/recalibration.png" alt="PSNR latency trade-off for recalibration frequency" /></figure>
+                <h4 class="title is-6 has-text-centered">Recalibration is worth the overhead</h4>
+                <p class="is-size-7 has-text-centered">Updating every scale recovers 1.73 dB over single transfer for only 0.30 seconds of additional latency at 720p.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Method -->
+  <section class="hero is-small is-light">
+    <div class="hero-body">
+      <div class="container is-four-fifths">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Fresh, clip-aware block selection</h2>
+            <div class="content">
+              <p>
+                SparSTAR sparsifies attention without token pruning, KV eviction, or skipped refinement scales &mdash;
+                every token still passes through every scale, but each query reads fewer key blocks.
+              </p>
+            </div>
+            <figure class="image">
+              <a href="static/images/method_overview.png" target="_blank">
+                <img src="static/images/method_overview.png" alt="Overview of the SparSTAR selection and sparse execution pipeline" />
+              </a>
+            </figure>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              Overview of the selection and sparse execution pipeline.
+            </h3>
+            <div class="content">
+              <ul>
+                <li><strong>Aggregate contiguous Q/K blocks.</strong> Queries and keys are partitioned into 128-token blocks, and per-head block compatibility is scored from the current activations.</li>
+                <li><strong>Apply clip-dependent retention.</strong> Required conditioning context stays dense, while eligible current-scale and preceding-clip blocks are ranked under a scale-wise density budget.</li>
+                <li><strong>Execute a forward-only sparse path.</strong> Selected blocks are passed to a FlexAttention-based implementation that omits backward-only indexing structures during inference.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="hero is-small is-white">
+    <div class="hero-body">
+      <div class="container is-four-fifths">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Quality&ndash;efficiency results</h2>
+            <div class="content">
+              <p>
+                Tables are reproduced from the paper. Reconstruction metrics are measured against paired dense
+                InfinityStar outputs at matched prompts and seeds.
+              </p>
+            </div>
+
+            <div class="columns is-multiline metric-row">
+              <div class="column is-one-quarter"><div class="metric"><span>T2V speedup</span><strong>1.60&times;</strong><small>VBench 83.83</small></div></div>
+              <div class="column is-one-quarter"><div class="metric"><span>T2V fidelity</span><strong>31.22 dB</strong><small>LPIPS 0.065</small></div></div>
+              <div class="column is-one-quarter"><div class="metric"><span>I2V speedup</span><strong>1.62&times;</strong><small>VBench 80.96</small></div></div>
+              <div class="column is-one-quarter"><div class="metric"><span>I2V fidelity</span><strong>27.96 dB</strong><small>LPIPS 0.080</small></div></div>
+            </div>
+
+            <figure class="image paper-table">
+              <a href="static/images/table1_720p.png" target="_blank"><img src="static/images/table1_720p.png" alt="Table 1: 720p T2V and I2V against token-reduction baselines" /></a>
+            </figure>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              <strong>Main comparison.</strong> Against the published token-reduction baselines, SparSTAR improves
+              paired-output PSNR by 2.92 dB on T2V and 2.31 dB on I2V over the strongest of them, while VBench stays
+              within 0.04 and 0.08 points of dense InfinityStar.
+            </h3>
+
+            <figure class="image paper-table">
+              <a href="static/images/table2_compat.png" target="_blank"><img src="static/images/table2_compat.png" alt="Table 2: compatibility with complementary acceleration" /></a>
+            </figure>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              <strong>Composable with other accelerations.</strong> SparSTAR is orthogonal to scale-skipping and
+              guidance-free sampling: stacking either pushes end-to-end speedup to 2.2&ndash;2.5&times; for
+              0.6&ndash;1.3 dB of paired-output PSNR.
+            </h3>
+
+            <figure class="image paper-table">
+              <a href="static/images/table3_480p.png" target="_blank"><img src="static/images/table3_480p.png" alt="Table 3: 480p 10-second T2V and I2V" /></a>
+            </figure>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              <strong>Longer, lower-resolution setting.</strong> On 480p 10-second generation the same training-free
+              configuration gives 1.31&times; (T2V) and 1.36&times; (I2V) speedup with VBench within 0.9 and 0.5 points
+              of dense.
+            </h3>
+
+            <div class="columns note-row">
+              <div class="column"><div class="note"><strong>7.08&times;</strong><span>sparse operator speedup over FlashAttention-2 in the matched final-scale benchmark</span></div></div>
+              <div class="column"><div class="note"><strong>&lt;1.7%</strong><span>end-to-end latency added by selection and mask construction</span></div></div>
+              <div class="column"><div class="note"><strong>74.6%</strong><span>of sparsified-scale attention cost comes from the 72k-token final scale</span></div></div>
+            </div>
+
+            <figure class="image" style="margin-top: 2rem;">
+              <img src="static/images/density_schedule.png" alt="Ablation of increasing, constant and decreasing density schedules" />
+            </figure>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              <strong>Hierarchical density schedule.</strong> The decreasing schedule allocates more density to earlier,
+              cheaper refinement scales and the most aggressive budget to the final 72k-token scale.
+            </h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Qualitative comparisons -->
+  <section class="hero is-small is-light">
+    <div class="hero-body">
+      <div class="container is-four-fifths">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Dense InfinityStar vs. SparSTAR</h2>
+            <div class="content">
+              <p>
+                Full 480p, 5-second, 81-frame generations at matched prompts and seeds. Left is dense InfinityStar,
+                right is SparSTAR.
+              </p>
+            </div>
+
+            <div class="video-wrap">
+              <video src="static/videos/qual_1.mp4" poster="static/videos/qual_1.jpg" autoplay loop muted playsinline controls preload="metadata"></video>
+              <h3 class="title is-6 has-text-centered figure-caption">&ldquo;A panda drinking coffee in a cafe in Paris, Van Gogh style&rdquo;</h3>
+
+              <video src="static/videos/qual_2.mp4" poster="static/videos/qual_2.jpg" autoplay loop muted playsinline controls preload="metadata"></video>
+              <h3 class="title is-6 has-text-centered figure-caption">&ldquo;A person is catching or throwing frisbee&rdquo;</h3>
+
+              <video src="static/videos/qual_3.mp4" poster="static/videos/qual_3.jpg" autoplay loop muted playsinline controls preload="metadata"></video>
+              <h3 class="title is-6 has-text-centered figure-caption">&ldquo;Gwen Stacy reading a book, pan right&rdquo;</h3>
+
+              <video src="static/videos/qual_4.mp4" poster="static/videos/qual_4.jpg" autoplay loop muted playsinline controls preload="metadata"></video>
+              <h3 class="title is-6 has-text-centered figure-caption">&ldquo;a truck&rdquo;</h3>
+
+              <video src="static/videos/qual_5.mp4" poster="static/videos/qual_5.jpg" autoplay loop muted playsinline controls preload="metadata"></video>
+              <h3 class="title is-6 has-text-centered figure-caption">&ldquo;The bund Shanghai, watercolor painting&rdquo;</h3>
+
+              <video src="static/videos/qual_6.mp4" poster="static/videos/qual_6.jpg" autoplay loop muted playsinline controls preload="metadata"></video>
+              <h3 class="title is-6 has-text-centered figure-caption">&ldquo;outdoor track&rdquo;</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reproducibility -->
+  <section class="hero is-small is-white">
+    <div class="hero-body">
+      <div class="container is-four-fifths">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Reproducibility assets</h2>
+            <div class="content">
+              <p>
+                The paper states that generation code, sparse selection, FlexAttention execution, preprocessing, metric
+                computation, table aggregation, prompt/seed manifests, density schedules, timing scripts, and raw
+                per-video outputs will be released upon publication.
+              </p>
+            </div>
+            <div class="checklist has-text-centered">
+              <span class="tag is-medium is-success is-light">&#10003; Paper &amp; supplement</span>
+              <span class="tag is-medium is-light">&#9675; Source code</span>
+              <span class="tag is-medium is-light">&#9675; Model configuration</span>
+              <span class="tag is-medium is-light">&#9675; Prompt/seed manifests</span>
+              <span class="tag is-medium is-light">&#9675; Raw evaluation outputs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-3 has-text-centered">BibTeX</h2>
       <pre><code>@article{lee2026sparstar,
   title   = {SparSTAR: Sparse Attention for SpaceTime AutoRegressive Video Synthesis},
   author  = {Lee, Jongbeom and Yu, Hyunwoo and Yang, Jincheol and Choi, Jaemin and Kang, Suk-Ju},
   journal = {arXiv preprint arXiv:XXXX.XXXXX},
   year    = {2026}
 }</code></pre>
-      <p class="small-note">Switch this to the <code>@inproceedings</code> AAAI entry once the paper is accepted.</p>
-    </section>
-  </main>
+      <p class="is-size-7 has-text-grey has-text-centered">
+        Switch this to the <code>@inproceedings</code> AAAI entry once the paper is accepted.
+      </p>
+    </div>
+  </section>
 
-  <footer>
-    <div class="shell">
-      <p>This page borrows its structure from the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>, which itself builds on the <a href="https://nerfies.github.io/" target="_blank" rel="noopener">Nerfies</a> project page.</p>
-      <p>Licensed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8 has-text-centered content">
+          <p>
+            This page borrows its structure from the
+            <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>,
+            which itself builds on the <a href="https://nerfies.github.io/" target="_blank">Nerfies</a> project page.
+          </p>
+          <p>
+            Licensed under a
+            <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
     </div>
   </footer>
+
 </body>
 </html>
