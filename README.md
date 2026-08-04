@@ -35,7 +35,7 @@ python -m http.server 8000
 
 - 논문 및 supplementary PDF
 - Figure 1~7 기반 이미지 (`attention_map`, `teaser`, `cross_scale_mass`, `clip_boundary`, `recalibration`, `method_overview`, `density_schedule`)
-- 480p T2V 정성 비교 GIF 3개
+- 480p T2V dense/ours 나란히 비교 영상 7개 (`static/videos/`) + 포스터 JPG
 - 논문 Table 1/2/3 캡처 (`table1_720p`, `table2_compat`, `table3_480p`)
 
 결과 표는 논문 PDF에서 300dpi로 크롭한 이미지입니다. 논문 수치가 바뀌면 아래로 재생성하세요.
@@ -55,9 +55,18 @@ static/
   css/style.css
   images/
   papers/
+  videos/
 ```
 
 JavaScript는 없습니다. 페이지는 순수 HTML/CSS로 동작합니다.
+
+## 비교 영상 재생성
+
+`t2v/480p_dense` 와 `t2v/480p_ours` (sparse-only = 논문 기준 SparSTAR) 를 좌우로 붙여 CRF 21로 인코딩했습니다.
+프롬프트 7개는 `qualitative_paper/figures/qual_t2v_480p_5s.tex` 주석에 기록된 논문 정성 그림과 동일합니다.
+
+> 주의: `*_ours` 는 sparse-only, `*_ours_goff` 는 guidance-off까지 포함한 변형입니다.
+> 논문 Table 1의 SparSTAR(1.60×)는 `*_ours` 쪽이므로 영상도 이 폴더를 써야 합니다.
 
 ## 크레딧
 
