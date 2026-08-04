@@ -1,0 +1,33 @@
+\documentclass[10pt]{article}
+\usepackage[paperwidth=7.6in,paperheight=5in,margin=0.3in]{geometry}
+\usepackage{times}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\usepackage[table]{xcolor}
+\definecolor{oursrow}{RGB}{229,229,255}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\begin{document}
+\begin{tabularx}{7.0in}{@{}llCCCCC@{}}
+\toprule
+\textbf{Category} & \textbf{Method} & \textbf{PSNR} ($\uparrow$) & \textbf{SSIM} ($\uparrow$) & \textbf{LPIPS} ($\downarrow$) & \textbf{VBench} ($\uparrow$) & \textbf{Speedup} ($\uparrow$) \\
+\midrule
+\multicolumn{7}{c}{\textbf{480p Text-to-Video (T2V)}} \\
+\midrule
+Baseline & InfinityStar$^{\dagger}$ & -- & -- & -- & 83.89 & $1.00\times$ \\
+\midrule
+Token Reduction & FastSTAR & 22.96 & 0.697 & 0.262 & -- & $1.47\times$ \\
+\midrule
+\rowcolor{oursrow} Sparse Attention & \textbf{SparSTAR} & \textbf{25.56} & \textbf{0.793} & \textbf{0.123} & \textbf{83.48} & $1.30\times$ \\
+\midrule
+\multicolumn{7}{c}{\textbf{480p Image-to-Video (I2V)}} \\
+\midrule
+Baseline & InfinityStar & -- & -- & -- & 80.15 & $1.00\times$ \\
+\midrule
+Token Reduction & FastSTAR & 23.86 & 0.750 & 0.234 & -- & $1.47\times$ \\
+\midrule
+\rowcolor{oursrow} Sparse Attention & \textbf{SparSTAR} & \textbf{26.14} & \textbf{0.813} & \textbf{0.111} & \textbf{79.03} & $1.30\times$ \\
+\bottomrule
+\end{tabularx}
+\end{document}

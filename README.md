@@ -32,7 +32,7 @@ python -m http.server 8000
 - 논문 및 supplementary PDF
 - Figure 1~7 기반 이미지 (`attention_map`, `teaser`, `cross_scale_mass`, `clip_boundary`, `recalibration`, `method_overview`, `density_schedule`)
 - 480p T2V dense/ours 나란히 비교 영상 4개 (`static/videos/`) + 포스터 JPG
-- 표 캡처 (`table1_720p`, `table2_compat` = 본문 Table 1/2, `table_480p_5s` = supplementary Table 7)
+- 표 이미지 (`table1_720p`, `table2_compat` = 본문 Table 1/2 크롭, `table3_480p_5s` = supplementary Table 7을 Table 1 템플릿으로 재조판)
 - Method 그림은 논문 Figure 6을 400dpi로 추출 (`method_overview`)
 
 결과 표와 method 그림은 논문 PDF에서 직접 크롭한 이미지입니다.
@@ -46,7 +46,7 @@ pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_Supplementary.pdf s
 # Table 1        hi-6.png  300dpi  y  225..1062  x  225..2324
 # Table 2        hi-6.png  300dpi  y 1246..1535  x  225..2324
 # Figure 6       m-5.png   400dpi  y  313.. 917  x 1799..3077   (우측 단)
-# Supp Table 7   s-05.png  400dpi  y  925..1755  x 1774..3099   (우측 단)
+# (Supp Table 7은 크롭하지 않고 재조판 — 아래 참고)
 ```
 
 ## 구조
@@ -62,6 +62,18 @@ static/
 
 레이아웃은 Bulma(CDN) + Font Awesome + academicons를 쓰고, `static/css/style.css` 는 그 위의 커스텀만 담습니다.
 AgilePruner / EDAFormer 계열 Academic Project Page Template 구조를 따릅니다. 자체 JavaScript는 없습니다.
+
+### 480p 표 재조판
+
+supplementary Table 7은 단일 컬럼 조판이라 본문 Table 1과 폭·서체 크기가 맞지 않습니다.
+같은 템플릿(booktabs, Category 열, `#E5E5FF` 강조행, AAAI `\textwidth` = 7in)으로 다시 조판했습니다.
+소스는 `static/papers/table3_480p_5s.tex` 입니다.
+
+```bash
+pdflatex table3_480p_5s.tex && pdftoppm -png -r 300 table3_480p_5s.pdf t && # 잉크 bbox 크롭 후 1600px로 리사이즈
+```
+
+> `tabular*` + `\extracolsep{\fill}` 을 쓰면 `\rowcolor` 가 열 사이 여백을 칠하지 못해 강조행이 끊깁니다. `tabularx` 를 쓰세요.
 
 ## Abstract
 

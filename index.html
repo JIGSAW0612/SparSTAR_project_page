@@ -120,7 +120,7 @@
             <p>
               InfinityStar extends visual autoregressive generation to video through a sequence of image and clip
               pyramids. Its changing scale and cross-clip context, however, leave late-stage attention costly and make
-              sparse patterns reused from diffusion or image VAR models unreliable. We introduce SparSTAR, a
+              sparse patterns reused from diffusion or image VAR models unreliable. We introduce <strong>SparSTAR</strong>, a
               training-free block-sparse attention method tailored to this setting. At each expensive scale and attention
               head, SparSTAR scores contiguous key blocks from the current query and key activations, retains required
               conditioning context, and executes the selected blocks through a forward-only sparse path. We analyze
@@ -128,7 +128,7 @@
               as reuse spans increasingly distant scales. Across these analyses, important key blocks shift, showing that
               recomputing block selection at each target scale is more reliable than reusing a transferred mask. On 720p
               text-to-video and image-to-video generation, SparSTAR preserves every token and refinement scale while
-              providing about a 1.6&times; end-to-end speedup and maintaining VBench and paired-output reconstruction
+              providing about a <strong>1.6&times; end-to-end speedup</strong> and maintaining VBench and paired-output reconstruction
               fidelity close to dense InfinityStar.
             </p>
           </div>
@@ -259,8 +259,8 @@
               pushes end-to-end speedup to 2.2&ndash;2.5&times; for 0.6&ndash;1.3 dB of paired-output PSNR.
             </h3>
 
-            <figure class="image paper-table narrow-table">
-              <a href="static/images/table_480p_5s.png" target="_blank"><img src="static/images/table_480p_5s.png" alt="480p five-second T2V and I2V quality and efficiency" /></a>
+            <figure class="image paper-table">
+              <a href="static/images/table3_480p_5s.png" target="_blank"><img src="static/images/table3_480p_5s.png" alt="480p five-second T2V and I2V quality and efficiency" /></a>
             </figure>
             <h3 class="title is-5 has-text-centered figure-caption">
               <strong>Lower resolution, same picture.</strong> At 480p, five seconds, SparSTAR stays closer to the dense

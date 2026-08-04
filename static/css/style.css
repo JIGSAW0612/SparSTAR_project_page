@@ -201,13 +201,6 @@ body {
   font-size: 0.9rem;
 }
 
-/* A single-column table does not need the full text width. */
-.narrow-table img {
-  min-width: 0;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
 /* Supporting plots that should not compete with the tables. */
 .small-figure {
   max-width: 560px;
@@ -228,7 +221,6 @@ body {
   .content ul {
     text-align: left;
   }
-  .narrow-table img,
   .small-figure {
     max-width: 100%;
   }
