@@ -181,6 +181,19 @@ body {
   line-height: 1.45;
 }
 
+/* Section walkthrough videos (Method / Analysis). 1280x720 explainers, so cap the
+   width rather than letting them span the full text column. */
+.demo-video {
+  display: block;
+  width: 100%;
+  max-width: 860px;
+  height: auto;
+  margin: 0.5rem auto 0;
+  border-radius: 6px;
+  border: 1px solid #dfe5ea;
+  background: #000;
+}
+
 /* Qualitative videos: a 2x2 grid so each side-by-side pair stays small.
    Use the player controls (or fullscreen) to inspect a pair closely. */
 .video-grid {

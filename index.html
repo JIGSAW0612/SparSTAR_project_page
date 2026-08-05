@@ -150,6 +150,12 @@
                 transferring it from an earlier scale or clip.
               </p>
             </div>
+            <video class="demo-video" src="static/videos/analysis_demo.mp4" poster="static/videos/analysis_demo.jpg"
+                   controls playsinline preload="metadata"></video>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              <strong>Walkthrough of the analysis (1:06).</strong> Cross-scale pattern reuse, the clip boundary, and how
+              often the mask has to be recomputed &mdash; the three findings detailed below.
+            </h3>
             <figure class="image">
               <a href="static/images/attention_map.png" target="_blank">
                 <img src="static/images/attention_map.png" alt="Dense-attention patterns across clips and scales" />
@@ -197,6 +203,12 @@
                 every token still passes through every scale, but each query reads fewer key blocks.
               </p>
             </div>
+            <video class="demo-video" src="static/videos/method_demo.mp4" poster="static/videos/method_demo.jpg"
+                   controls playsinline preload="metadata"></video>
+            <h3 class="title is-5 has-text-centered figure-caption">
+              <strong>Walkthrough of the method (1:16).</strong> Where the attention cost concentrates, how the
+              aggregated query&ndash;key selector picks blocks, and how the density budget is spread across scales.
+            </h3>
             <figure class="image">
               <a href="static/images/method_overview.png" target="_blank">
                 <img src="static/images/method_overview.png" alt="Overview of the SparSTAR selection and sparse execution pipeline" />
