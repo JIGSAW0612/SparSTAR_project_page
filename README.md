@@ -29,9 +29,14 @@ python -m http.server 8000
 4. **BibTeX** — 현재 arXiv 프리프린트 형식. 게재 확정 후 `@inproceedings` 엔트리로 교체
 5. **`review-banner`** — accept 후 해당 `<div>` 통째로 삭제
 
+## PDF는 이 저장소에 두지 않습니다
+
+논문·supplementary PDF는 **작업 트리와 git 이력 양쪽에서 제거**했고 `.gitignore` 로 재유입을 막아뒀습니다.
+공개본은 arXiv가 호스팅하고, 페이지의 Paper/arXiv 버튼은 arXiv 링크를 겁니다.
+로컬 사본은 저장소 밖 `../_papers_local/` 에 있습니다 (표·그림 재생성용).
+
 ## 현재 포함된 자산
 
-- 논문 및 supplementary PDF
 - Figure 1~7 기반 이미지 (`attention_map`, `teaser`, `cross_scale_mass`, `clip_boundary`, `recalibration`, `method_overview`, `density_schedule`)
 - 480p T2V dense/ours 나란히 비교 영상 4개 (`static/videos/`) + 포스터 JPG
 - 표 이미지 (`table1_720p`, `table2_compat` = 본문 Table 1/2 크롭, `table3_480p_5s` = supplementary Table 7을 Table 1 템플릿으로 재조판)
@@ -41,9 +46,9 @@ python -m http.server 8000
 **표 이미지에는 논문 캡션을 포함하지 않습니다** — 설명은 페이지의 HTML 캡션이 담당합니다.
 
 ```bash
-pdftoppm -png -r 300 -f 6 -l 6 static/papers/SparSTAR_preprint.pdf hi
-pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_preprint.pdf m
-pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_Supplementary.pdf s
+pdftoppm -png -r 300 -f 6 -l 6 ../_papers_local/SparSTAR_preprint.pdf hi
+pdftoppm -png -r 400 -f 5 -l 5 ../_papers_local/SparSTAR_preprint.pdf m
+pdftoppm -png -r 400 -f 5 -l 5 ../_papers_local/SparSTAR_Supplementary.pdf s
 
 # Table 1        hi-6.png  300dpi  y  225..1062  x  225..2324
 # Table 2        hi-6.png  300dpi  y 1246..1535  x  225..2324
@@ -83,7 +88,7 @@ pdflatex table3_480p_5s.tex && pdftoppm -png -r 300 table3_480p_5s.pdf t && # �
 논문이 바뀌면 아래로 다시 뽑아 교체하고, 문자 단위로 일치하는지 확인하세요.
 
 ```bash
-pdftotext -f 1 -l 1 static/papers/SparSTAR_preprint.pdf - | sed -n '/^Abstract/,/^Introduction/p'
+pdftotext -f 1 -l 1 ../_papers_local/SparSTAR_preprint.pdf - | sed -n '/^Abstract/,/^Introduction/p'
 ```
 
 > pdftotext는 줄바꿈에서 공백을 흘립니다 (`asequence`, `cross-clipcontext`). 붙여넣기 전에 복원하세요.
