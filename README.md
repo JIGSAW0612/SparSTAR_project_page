@@ -15,7 +15,9 @@ python -m http.server 8000
 1. 새 공개/비공개 GitHub 저장소를 만듭니다.
 2. 이 폴더의 내용을 저장소 루트에 업로드합니다.
 3. `Settings → Pages → Deploy from a branch`에서 `main / root`를 선택합니다.
-4. AAAI-27 리뷰 중에는 저장소를 **비공개로 유지하거나, 익명 버전만 배포**하는 편이 안전합니다.
+4. **공개 페이지에 심사 중인 학회명을 쓰지 마세요.** 비익명 페이지가 특정 학회 제출 사실을 명시하면
+   blind-review 정책상 제출 광고로 해석될 수 있습니다. arXiv 프리프린트 자체는 보통 허용됩니다.
+   venue 배너·meta keywords·PDF 파일명·BibTeX 주석을 전부 venue-neutral하게 유지하세요.
 
 ## 공개 전 반드시 바꿀 항목
 
@@ -24,7 +26,7 @@ python -m http.server 8000
 1. **저자 블록** (`<div class="authors">`) — 이름, 홈페이지 링크, 윗첨자 소속 번호, `*`/`†` 기호
 2. **소속 줄** (`<div class="affiliation">`) — 소속명. 소속이 하나면 `<sup>N</sup>`을 전부 지우세요.
 3. **버튼 행** (`.action-row`) — Code / arXiv 링크가 생기면 `<span class="button disabled">`를 `<a class="button" href="...">`로 교체
-4. **BibTeX** — 현재 arXiv 프리프린트 형식. accept 후 `@inproceedings` AAAI 엔트리로 교체
+4. **BibTeX** — 현재 arXiv 프리프린트 형식. 게재 확정 후 `@inproceedings` 엔트리로 교체
 5. **`review-banner`** — accept 후 해당 `<div>` 통째로 삭제
 
 ## 현재 포함된 자산
@@ -39,8 +41,8 @@ python -m http.server 8000
 **표 이미지에는 논문 캡션을 포함하지 않습니다** — 설명은 페이지의 HTML 캡션이 담당합니다.
 
 ```bash
-pdftoppm -png -r 300 -f 6 -l 6 static/papers/SparSTAR_AAAI27_Submission.pdf hi
-pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_AAAI27_Submission.pdf m
+pdftoppm -png -r 300 -f 6 -l 6 static/papers/SparSTAR_preprint.pdf hi
+pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_preprint.pdf m
 pdftoppm -png -r 400 -f 5 -l 5 static/papers/SparSTAR_Supplementary.pdf s
 
 # Table 1        hi-6.png  300dpi  y  225..1062  x  225..2324
@@ -66,7 +68,7 @@ AgilePruner / EDAFormer 계열 Academic Project Page Template 구조를 따릅�
 ### 480p 표 재조판
 
 supplementary Table 7은 단일 컬럼 조판이라 본문 Table 1과 폭·서체 크기가 맞지 않습니다.
-같은 템플릿(booktabs, Category 열, `#E5E5FF` 강조행, AAAI `\textwidth` = 7in)으로 다시 조판했습니다.
+같은 템플릿(booktabs, Category 열, `#E5E5FF` 강조행, `\textwidth` = 7in)으로 다시 조판했습니다.
 소스는 `static/papers/table3_480p_5s.tex` 입니다.
 
 ```bash
@@ -81,7 +83,7 @@ pdflatex table3_480p_5s.tex && pdftoppm -png -r 300 table3_480p_5s.pdf t && # �
 논문이 바뀌면 아래로 다시 뽑아 교체하고, 문자 단위로 일치하는지 확인하세요.
 
 ```bash
-pdftotext -f 1 -l 1 static/papers/SparSTAR_AAAI27_Submission.pdf - | sed -n '/^Abstract/,/^Introduction/p'
+pdftotext -f 1 -l 1 static/papers/SparSTAR_preprint.pdf - | sed -n '/^Abstract/,/^Introduction/p'
 ```
 
 > pdftotext는 줄바꿈에서 공백을 흘립니다 (`asequence`, `cross-clipcontext`). 붙여넣기 전에 복원하세요.
