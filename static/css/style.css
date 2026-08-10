@@ -181,6 +181,63 @@ body {
   line-height: 1.45;
 }
 
+/* Hero gallery: SparSTAR outputs alone, mosaic with one 2x2 feature tile.
+   Grid rows are sized by the 16:9 single tiles; the feature drops aspect-ratio
+   and fills its 2x2 area instead, so rows stay aligned (an aspect-ratio on a
+   row-spanning item fights the gap and leaves it short). */
+.gallery-section {
+  padding: 0 0 2.5rem;
+}
+
+.gallery-title {
+  margin-bottom: 1.1rem !important;
+}
+
+.video-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-flow: dense;
+  gap: 10px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 14px;
+}
+
+.g-item {
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.g-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, .18);
+}
+
+.g-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.g-feature {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+
+@media screen and (max-width: 900px) {
+  .video-gallery { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media screen and (max-width: 560px) {
+  .video-gallery { grid-template-columns: 1fr; gap: 8px; }
+  .g-feature { grid-column: span 1; grid-row: span 1; aspect-ratio: 16 / 9; }
+}
+
 /* Section walkthrough videos (Method / Analysis). 1280x720 explainers, so cap the
    width rather than letting them span the full text column. */
 .demo-video {

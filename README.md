@@ -117,6 +117,20 @@ pdftotext -f 1 -l 1 ../_papers_local/SparSTAR_preprint.pdf - | sed -n '/^Abstrac
 > 720p는 프롬프트당 샘플이 5개(`s_idx` 0~4)이므로 파일명이 `<stem>-<s_idx>.mp4` 입니다.
 > 480p는 s_idx 0 하나뿐이라 이 구분이 없었습니다.
 
+## 상단 갤러리
+
+`static/gallery/` 는 **SparSTAR 단독 출력**입니다 (dense 비교 없음). 720p_ours에서 9개를 골라
+854px(대형 타일만 1280px), CRF 23으로 인코딩했습니다 — 장식용이라 비교 영상만큼의 충실도가 필요 없습니다.
+레이아웃은 4열 CSS 그리드에 좌상단 하나만 2x2로 키운 모자이크입니다.
+
+되돌리려면:
+
+```bash
+git revert --no-edit <갤러리 커밋>        # 갤러리만 취소
+# 또는
+git reset --hard before-gallery && git push --force origin main
+```
+
 ## 크레딧
 
 Academic Project Page Template 계열의 학술 프로젝트 페이지 구성과 AgilePruner / EDAFormer 페이지를 참고해 새로 작성한 초안입니다. 공개 시 footer의 크레딧을 유지하는 것을 권장합니다.
