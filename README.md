@@ -119,15 +119,35 @@ pdftotext -f 1 -l 1 ../_papers_local/SparSTAR_preprint.pdf - | sed -n '/^Abstrac
 
 ## 상단 갤러리
 
-`static/gallery/` 는 **SparSTAR 단독 출력**입니다 (dense 비교 없음). 720p_ours에서 9개를 골라
-854px(대형 타일만 1280px), CRF 23으로 인코딩했습니다 — 장식용이라 비교 영상만큼의 충실도가 필요 없습니다.
-레이아웃은 4열 CSS 그리드에 좌상단 하나만 2x2로 키운 모자이크입니다.
+`static/gallery/` 는 **SparSTAR 단독 출력**입니다 (dense 비교 없음). 854px(대형 타일만 1280px), CRF 23.
+레이아웃은 4열 CSS 그리드에 좌상단만 2x2로 키운 모자이크입니다.
+
+선정 기준이 두 가지입니다.
+
+1. **`psnr_last10` 상위** — 열화가 클립 후반에 누적되므로, 전체 평균 PSNR보다 마지막 10프레임
+   PSNR이 "끝까지 안 깨지는" 클립을 더 잘 골라냅니다.
+2. **카메라 이동이 겹치지 않을 것** — numpy FFT 위상상관으로 프레임 간 전역 이동을 추정해
+   pan L->R / pan R->L / tilt up / tilt down / static / subject 로 분류한 뒤,
+   같은 유형이 몰리지 않도록 배분했습니다.
+
+| 파일 | 카메라 | psnr_last10 | PSNR |
+|---|---|---|---|
+| g1_vangogh (대형) | static | 31.70 | 33.13 |
+| g2_rollerskate | tilt up | 31.60 | 31.27 |
+| g3_panda | static | 31.61 | 32.37 |
+| g4_cake | tilt up | 32.39 | 33.21 |
+| g5_treadmill | static + 피사체 | 33.11 | 33.54 |
+| g6_skateboard | pan R->L | 33.01 | 34.41 |
+| g7_arabian | pan L->R | 32.06 | 33.18 |
+| g8_flute | 피사체 | 31.52 | 31.87 |
+| g9_clapping | static + 피사체 | 33.13 | 33.50 |
+
+> 초판은 서재·미술관·파르테논·상하이를 넣었는데 넷 다 정적인 배경을 가로로 패닝하는
+> 같은 성격이라 단조로웠습니다. 가로 패닝은 서로 반대 방향 2개만 남겼습니다.
 
 되돌리려면:
 
 ```bash
-git revert --no-edit <갤러리 커밋>        # 갤러리만 취소
-# 또는
 git reset --hard before-gallery && git push --force origin main
 ```
 
