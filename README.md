@@ -98,9 +98,19 @@ pdftotext -f 1 -l 1 ../_papers_local/SparSTAR_preprint.pdf - | sed -n '/^Abstrac
 `t2v/480p_dense` 와 `t2v/480p_ours` (sparse-only = 논문 기준 SparSTAR) 를 좌우로 붙여 CRF 15(veryslow)로 인코딩했습니다. 원본 OURS 대비 PSNR-Y 48~50dB로,
 코덱이 얹는 오차를 모델 자체 차이(dense 대비 약 29dB)보다 20dB 아래로 눌러
 페이지가 코덱 아티팩트가 아닌 모델 출력을 보여주도록 했습니다.
-프롬프트는 motion 하위 60%를 제외한 뒤 **PSNR 내림차순**으로 후보를 뽑고,
-카메라 이동이 아닌 실제 피사체 운동이 있으면서 생성이 깨지지 않은 4개를 눈으로 골랐습니다.
-(car accelerating / ballet / sword fighting / skateboarding)
+프롬프트 선정은 **미학적 판단 없이 정량 규칙만** 씁니다 — motion 하위 60%를 제외한 뒤
+**LPIPS 오름차순 상위 4개**입니다. LPIPS는 지각적 차이 지표라 "dense와 눈으로 구분되지 않는 정도"를
+직접 재며, 논문 정성 그림의 선정 규칙과 같은 계열입니다.
+
+| # | 프롬프트 | LPIPS | 평균 PSNR | 최악 프레임 PSNR |
+|---|---|---|---|---|
+| 1 | a spoon and a laptop | 0.0550 | 32.66 | 29.12 |
+| 2 | a refrigerator and skis | 0.0638 | 28.60 | 25.35 |
+| 3 | In a still frame, gas station | 0.0648 | 28.70 | 26.74 |
+| 4 | a truck | 0.0692 | 28.39 | 25.68 |
+
+> 최저 PSNR 프레임은 대부분 **마지막 프레임**입니다. 클립이 진행될수록 dense와 벌어지므로,
+> 후보를 평가할 때 중간 프레임 하나만 보면 안 됩니다.
 
 > 주의: `*_ours` 는 sparse-only, `*_ours_goff` 는 guidance-off까지 포함한 변형입니다.
 > 논문 Table 1의 SparSTAR(1.60×)는 `*_ours` 쪽이므로 영상도 이 폴더를 써야 합니다.
