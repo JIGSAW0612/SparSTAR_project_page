@@ -95,7 +95,9 @@ pdftotext -f 1 -l 1 ../_papers_local/SparSTAR_preprint.pdf - | sed -n '/^Abstrac
 
 ## 비교 영상 재생성
 
-`t2v/480p_dense` 와 `t2v/480p_ours` (sparse-only = 논문 기준 SparSTAR) 를 좌우로 붙여 CRF 22로 인코딩했습니다.
+`t2v/480p_dense` 와 `t2v/480p_ours` (sparse-only = 논문 기준 SparSTAR) 를 좌우로 붙여 CRF 15(veryslow)로 인코딩했습니다. 원본 OURS 대비 PSNR-Y 48~50dB로,
+코덱이 얹는 오차를 모델 자체 차이(dense 대비 약 29dB)보다 20dB 아래로 눌러
+페이지가 코덱 아티팩트가 아닌 모델 출력을 보여주도록 했습니다.
 프롬프트는 motion 하위 60%를 제외한 뒤 **PSNR 내림차순**으로 후보를 뽑고,
 카메라 이동이 아닌 실제 피사체 운동이 있으면서 생성이 깨지지 않은 4개를 눈으로 골랐습니다.
 (car accelerating / ballet / sword fighting / skateboarding)
